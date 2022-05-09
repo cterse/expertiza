@@ -37,7 +37,9 @@ after_success:
 - bundle exec cap staging deploy --trace
 ```
 
-2. Add the following lines at the end:
+## Gemfile
+
+1. Add the following lines at the end:
 ```ruby
 gem 'ed25519', '1.2.4'
 gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'
