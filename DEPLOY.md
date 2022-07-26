@@ -1,33 +1,59 @@
-# Deployment changes:
+# Deployment in Expertiza
 
-## Remote deployment server
+This document provides steps for using Capistrano to deploy code to various environments specifed in `config/deploy` dir of the project root. 
+</br>Also, steps for implementing automated dpeloyments on successful Travis builds are outlined in this document.
 
-1. Install `rvm`. Run `sudo ln -s /usr/share/rvm/ /usr/local/rvm` after successful rvm install.
-2. Install ruby version `2.6.6` using the `rvm`
-3. Install `mysql-server`
-4. Install `mysql-devel`
-5. Make sure user `root` has remote login enabled with no password on both `localhost` and `127.0.0.1`. Use the following commands:
+## Deployment Targets
+
+| Expertiza Branch | Target Server | IP Address | Deployment User | Deployment Directory
+|---|---|---|---|---|
+| main | VCL - Master branch testing server	| 152.7.98.236 | cterse | `/var/www` |
+
+## Deployment Steps
+
+Follow the following steps to configure a new server as a deployment target and start deployment using Capistrano. Most of the steps outlined under "Configuring a new Target Server 🎯" need to be run only once when configuring a new target server, and need not be run on consecutive deployments. 
+
+### Configuring a new Target Server 🎯
+Follow the following steps to setup a new deployment target server for both manual deployments using the `cap <env> deploy` command as well as automated Travis deployments.
+1. Get access to a user account with sudo access.
+2. Setup passwordless SSH access to this target from the machines you would want to deploy from.
+3. Make sure the following are installed on the target:
+  - `rvm`
+  - JDK 8
+  - git
+  - `mysql-server`
+  - `mysql-devel`
+  - NodeJS
+  - `npm`
+  - `bundler` gem
+4. Make sure the deployment user has MySQL remote login enabled with no password on both `localhost` and `127.0.0.1`. Use the following commands in the mysql terminal:
 ```sql
 create user 'root'@'127.0.0.1' identified by '';
 grant all privileges on *.* to 'root'@'127.0.0.1' with grant option;
 flush privileges;
 ```
-6. Install `sudo yum install git -y`
-7. Install Node.js with 
-```bash
-sudo yum install -y gcc-c++ make 
-curl -sL https://rpm.nodesource.com/setup_16.x | sudo -E bash - 
-sudo yum install nodejs -y
-```
-8. Install Java JDK 8 with `sudo yum install java-1.8.0-openjdk-devel -y`
-9. Run following commands to set relevant Java environment variables:
-
+5. Run following commands to set relevant Java environment variables:
 ```bash
 export JAVA_HOME=$(dirname $(dirname $(readlink $(readlink $(which javac)))))
 export PATH=$PATH:$JAVA_HOME/bin
 export CLASSPATH=.:$JAVA_HOME/jre/lib:$JAVA_HOME/lib:$JAVA_HOME/lib/tools.jar
 ```
-10. Ensure the required files are available on the server `secrets.yml, database.yml, public1.pem, private2.pem` at `<project-root>/shared/config`
+6. Install required ruby versions using `rvm`.
+7. Ensure `secrets.yml` and `database.yml` are present in `<project-root>/shared/config` dir on the target.</br>Ensure the correct password is specified in `database.yml`.</br>If the directory structure is not present on the target, initiate a deployment using `cap <env> deploy`. This deployment will fail, but will create the required dirrectory structure, in which you can place the above two files. Or, manually create the directory structure.
+8. Ensure `public1.pem` and `private2.pem` are present in `<project-root>/shared` dir on the target. Refer point 6. if the directory structure is not present. 
+9. Setup firewall access rules as follows:
+```bash
+sudo iptables -I INPUT -p tcp -s 0.0.0.0/0 --dport 8080 -j ACCEPT
+sudo ufw allow 8080 (run again if it fails)
+sudo ufw reload
+```
+10. For automated deployments from Travis servers, run command to allow Travis servers in firewall:
+```bash
+sudo iptables -I INPUT -p tcp -s "$(dig +short nat.travisci.net | tr -s '\r\n' ',' | sed -e 's/,$/\n/')" --dport 22 -j ACCEPT
+```
+
+**Hint:** To test your new configuration, manually clone the desired Expertiza branch in some random dir on the server, run `bundle install`, `rake db:migrate` and start the Rails server using `rails s`, all inside the cloned repo. If the application loads up correctly, the server is ready for remote deployments provided correct SSH setup.
+
 
 ## `/.travis.yml`
 
@@ -82,14 +108,6 @@ role :db,  %w[<SERVER_USER>@<YOUR_DEPLOYMENT_SERVER>]
 
 ## `/bower.json`
 1. Add dependency `"tinymce": "latest"` in the bower.json file.
-
-## Remote server
-
-Run command to add Travis servers to firewall:
-
-```bash
-sudo iptables -I INPUT -p tcp -s "$(dig +short nat.travisci.net | tr -s '\r\n' ',' | sed -e 's/,$/\n/')" --dport 22 -j ACCEPT
-```
 
 ## Local machine
 
