@@ -3,17 +3,13 @@
 This document provides steps for using Capistrano to deploy code to various environments specifed in `config/deploy` dir of the project root. 
 </br>Also, steps for implementing automated dpeloyments on successful Travis builds are outlined in this document.
 
-## Deployment Targets
+## Deployment Targets 🎯
 
 | Expertiza Branch | Capistrano Environment | Target Server | IP Address | Deployment User | Deployment Directory
 |---|---|---|---|---|---|
 | deployment_fix | testing | VCL - Master branch testing server	| 152.7.98.236 | cterse | `/var/www` |
 
-## Deployment Steps
-
-Follow the following steps to configure a new server as a deployment target and start deployment using Capistrano. Most of the steps outlined under "Configuring a new Target Server 🎯" need to be run only once when configuring a new target server, and need not be run on consecutive deployments. 
-
-### Configuring a new Target Server 🎯
+## Configuring a new Target Server 🎯
 Follow the following steps to setup a new deployment target server for both manual deployments using the `cap <env> deploy` command as well as automated Travis deployments.
 1. Get access to a user account with sudo access.
 2. Setup passwordless SSH access to this target from the machines you would want to deploy from.
@@ -54,6 +50,7 @@ sudo iptables -I INPUT -p tcp -s "$(dig +short nat.travisci.net | tr -s '\r\n' '
 
 **Hint:** To test your new configuration, manually clone the desired Expertiza branch in some random dir on the server, run `bundle install`, `rake db:migrate` and start the Rails server using `rails s`, all inside the cloned repo. If the application loads up correctly, the server is ready for remote deployments provided correct SSH setup.
 
+## Deployment using Capistrano ⚙️
 ### Configuring Capistrano 🌎
 `Capfile`, `config/deploy.rb` and `config/deploy/<env>.rb` are the main Capistrano config files. 
 
@@ -68,7 +65,9 @@ Under the `config/deploy` dir are the various environment configuration files. F
 4. Set the branch to be deployed in this envrionment: `set :branch, 'deployment_fix'`
 5. Set the correct Ruby version (and make sure this version is installed in the target RVM): `set :rvm_ruby_version, '2.3.1'`
 
-## `/.travis.yml`
+
+## Deployment using TravisCI 🤖
+### `/.travis.yml`
 
 1. Change rvm to 2.6.6
 2. Add branch you want to deploy under `branches`.
@@ -88,24 +87,8 @@ gem 'ed25519', '1.2.4'
 gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'
 ```
 
-## Capfile
-
-Add `require 'capistrano/bower'` to Capfile to install all the npm dependencies defined in `/bower.json` during deployment.
-
-## `/config/deploy.rb`
-
-1. Change all occurrences of `production` to `staging`.
-2. Edit line and set to `lock '~> 3.17.0'`
-3. Edit line and set to `set :repo_url, 'https://github.com/<YOUR_GITHUB_USER>/expertiza.git'`
-4. Edit line and set to `set :rvm_ruby_version, '2.6.6'`
-5. Edit line and set to `set :deploy_to, "/home/<username>/expertiza_deploy"` E.g.:`/home/krshah3/expertiza_deploy"`
-6. Edit line and set to `set :branch, 'deploy'`
-7. Make sure `JAVA_HOME` under `set :default_env` is correctly set according to the value in the remote server.
-
-**TIP:** Add `Rake::Task["deploy:migrate"].clear_actions` to `deploy.rb` to disable the migrate rake tasks during deployment. 
-
-## `/config/deploy/staging.rb`
-
+### `/config/deploy/<env>.rb`
+We have used staging.rb env as a testing env for Travis deployments. Make the following changes in the approproate Capistrano env file.
 1. Edit and set line to `server '<YOUR_DEPLOYMENT_SERVER>', user: '<SERVER_USER>', roles: %w[web app db], my_property: :my_value`
 2. Edit user name in following lines:
 ```ruby
@@ -114,17 +97,12 @@ role :web, %w[<SERVER_USER>@<YOUR_DEPLOYMENT_SERVER>]
 role :db,  %w[<SERVER_USER>@<YOUR_DEPLOYMENT_SERVER>]
 ```
 
-## Gemfile
-1. Add `gem 'capistrano-bower'` to Gemfile, to install all the npm dependencies in the target server.
-2. run `bundle lock --update` after above changes to generate a new Gemfile.lock.</br>
-**ERROR:** `Could not find gem 'ruby (~> 2.3.1.0)' in the local ruby installation. The source contains 'ruby' at: 2.6.6.146` error. : Make sure you are on the right `deploy` branch.
+### `/bower.json`
+1. Add dependency `"tinymce": "latest"` in the bower.json file. (only if there are errors)
 
-## `/bower.json`
-1. Add dependency `"tinymce": "latest"` in the bower.json file.
+### Local machine
 
-## Local machine
-
-Follow the bewlo steps to encrypt the secret private key and upload it in the repository. This private key would be used to ssh and deploy into the target server.
+Follow the below steps to encrypt the secret private key and upload it in the repository. This private key would be used to ssh and deploy into the target server.
 ```bash
 gem instal travis
 travis login --pro --github-token <token>
@@ -132,4 +110,8 @@ travis encrypt DEPLOY_KEY="password for encryption" --add
 openssl aes-256-cbc -k "password for encryption" -in ~/.ssh/id_rsa -out deploy_id_rsa_enc_travis -a
 ```
 
-Check for further reference: https://gist.github.com/waynegraham/5c6ab006862123398d07 .
+Check for further reference: https://gist.github.com/waynegraham/5c6ab006862123398d07.
+
+## Tips 💡
+1. Add `Rake::Task["deploy:migrate"].clear_actions` to `deploy.rb` to disable the migrate rake tasks during deployment. 
+2. Run `bundle lock --update` to update the `Gemfile.lock` after any changes to the `Gemfile`. Make sure to track both files in git.
