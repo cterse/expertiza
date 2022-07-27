@@ -54,6 +54,19 @@ sudo iptables -I INPUT -p tcp -s "$(dig +short nat.travisci.net | tr -s '\r\n' '
 
 **Hint:** To test your new configuration, manually clone the desired Expertiza branch in some random dir on the server, run `bundle install`, `rake db:migrate` and start the Rails server using `rails s`, all inside the cloned repo. If the application loads up correctly, the server is ready for remote deployments provided correct SSH setup.
 
+### Configuring Capistrano 🌎
+`Capfile`, `config/deploy.rb` and `config/deploy/<env>.rb` are the main Capistrano config files. 
+
+#### Capfile
+Capfile should be in the project root. Make sure the Capfile has `require 'capistrano/bower'` entry and that it does NOT have the `require 'capistrano/rails/migrations'` entry.
+
+#### Capistrano env files
+Under the `config/deploy` dir are the various environment configuration files. For every env file, make sure that:
+1. The targer server domain name/IP address is correct in all the places. 
+2. The deployment user is correct and has passwordless SSH and sudo access on the target server.
+3. Set the Java env: `set :default_env, 'JAVA_HOME' => '/usr/lib/jvm/java-8-oracle'`
+4. Set the branch to be deployed in this envrionment: `set :branch, 'deployment_fix'`
+5. Set the correct Ruby version (and make sure this version is installed in the target RVM): `set :rvm_ruby_version, '2.3.1'`
 
 ## `/.travis.yml`
 
