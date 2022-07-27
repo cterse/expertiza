@@ -67,11 +67,19 @@ Under the `config/deploy` dir are the various environment configuration files. F
 
 ## Deployment using TravisCI 🤖
 Travis CI is not a replacement for Capistrano. Travis just provides build validation. On a successful build, we can configure the Travis servers to deploy the build using Capistrano.
-### `/.travis.yml`
 
-1. Change rvm to 2.6.6
-2. Add branch you want to deploy under `branches`.
-3. Add following section:
+### Local machine
+Follow the below steps to encrypt the secret private key and upload it in the repository. This private key would be used to ssh and deploy into the target server.
+```bash
+gem install travis
+travis login --pro --github-token <token>
+travis encrypt DEPLOY_KEY="password for encryption" --add
+openssl aes-256-cbc -k "password for encryption" -in ~/.ssh/id_rsa -out deploy_id_rsa_enc_travis -a
+```
+
+### `/.travis.yml`
+1. Add branch you want to deploy under `branches`.
+2. Add following section:
 ```yml
 after_success:
 - openssl aes-256-cbc -k $DEPLOY_KEY -in config/deploy_id_rsa_enc_travis -d -a -out config/deploy_id_rsa
@@ -81,7 +89,8 @@ after_success:
 - bundle exec cap staging deploy --trace
 ```
 
-2. Add the following lines at the end:
+### Gemfile
+Add the following lines at the end:
 ```ruby
 gem 'ed25519', '1.2.4'
 gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'
@@ -100,16 +109,6 @@ role :db,  %w[<SERVER_USER>@<YOUR_DEPLOYMENT_SERVER>]
 ### `/bower.json`
 1. Add dependency `"tinymce": "latest"` in the bower.json file. (only if there are errors)
 
-### Local machine
-
-Follow the below steps to encrypt the secret private key and upload it in the repository. This private key would be used to ssh and deploy into the target server.
-```bash
-gem instal travis
-travis login --pro --github-token <token>
-travis encrypt DEPLOY_KEY="password for encryption" --add
-openssl aes-256-cbc -k "password for encryption" -in ~/.ssh/id_rsa -out deploy_id_rsa_enc_travis -a
-```
-
 Check for further reference: https://gist.github.com/waynegraham/5c6ab006862123398d07.
 
 ## Tips 💡
@@ -118,3 +117,4 @@ Check for further reference: https://gist.github.com/waynegraham/5c6ab0068621233
 3. VCL VMs may keep on crashing. Try a soft then a hard reboot if there are connection issues.
 4. The expertiza.ncsu.edu (Production) server runs RHEL and the Master Testing VCL Server runs Ubuntu 16.04 -> good to know.
 5. If you're testing a deployment with all success messages, no visible errors, but that does not load the final application, try accessing the application on the target server itself first. Use `curl` with the localhost as domain and appropriate port. If it works here, there are firewall issues. 
+6. Travis CI charges as per the time required for builds. For testing, disable build time-consuming or already-tested components under the `matrix` section in `.travis.yml` 
