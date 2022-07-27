@@ -8,6 +8,8 @@ This document provides steps for using Capistrano to deploy code to various envi
 | Expertiza Branch | Capistrano Environment | Target Server | IP Address | Deployment User | Deployment Directory
 |---|---|---|---|---|---|
 | deployment_fix | testing | VCL - Master branch testing server	| 152.7.98.236 | cterse | `/var/www` |
+| main | production | ???	| ??? | ??? | `/var/www` |
+| legacy | ??? | ???	| ??? | ??? | `/var/www` |
 
 ## Configuring a new Target Server 🎯
 Follow the following steps to setup a new deployment target server for both manual deployments using the `cap <env> deploy` command as well as automated Travis deployments.
@@ -67,6 +69,7 @@ Under the `config/deploy` dir are the various environment configuration files. F
 
 
 ## Deployment using TravisCI 🤖
+Travis CI is not a replacement for Capistrano. Travis just provides build validation. On a successful build, we can configure the Travis servers to deploy the build using Capistrano.
 ### `/.travis.yml`
 
 1. Change rvm to 2.6.6
@@ -115,3 +118,6 @@ Check for further reference: https://gist.github.com/waynegraham/5c6ab0068621233
 ## Tips 💡
 1. Add `Rake::Task["deploy:migrate"].clear_actions` to `deploy.rb` to disable the migrate rake tasks during deployment. 
 2. Run `bundle lock --update` to update the `Gemfile.lock` after any changes to the `Gemfile`. Make sure to track both files in git.
+3. VCL VMs may keep on crashing. Try a soft then a hard reboot if there are connection issues.
+4. The expertiza.ncsu.edu (Production) server runs RHEL and the Master Testing VCL Server runs Ubuntu 16.04 -> good to know.
+5. If you're testing a deployment with all success messages, no visible errors, but that does not load the final application, try accessing the application on the target server itself first. Use `curl` with the localhost as domain and appropriate port. If it works here, there are firewall issues. 
