@@ -1,7 +1,7 @@
 # Deployment in Expertiza
 
 This document provides steps for using Capistrano to deploy code to various environments specifed in `config/deploy` dir of the project root. 
-</br>Also, steps for implementing automated dpeloyments on successful Travis builds are outlined in this document.
+</br>Also, steps for implementing automated deployments on successful Travis builds are outlined in this document.
 
 ## Deployment Targets 🎯
 
