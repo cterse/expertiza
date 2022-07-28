@@ -9,7 +9,7 @@ This document provides steps for using Capistrano to deploy code to various envi
 |---|---|---|---|---|---|
 | deployment_fix | testing | VCL - Master branch testing server	| 152.7.98.236 | cterse | `/var/www` |
 | main | testing | lin-res103.csc.ncsu.edu	| 152.14.92.215 | ??? | `/var/www` |
-| legacy | ??? | ???	| ??? | ??? | `/var/www` |
+| legacy | production | lin-res44.csc.ncsu.edu	| 152.14.92.5 | expertiza | `/var/www` |
 
 ## Configuring a new Target Server 🎯
 Follow the following steps to setup a new deployment target server for both manual deployments using the `cap <env> deploy` command as well as automated Travis deployments.
