@@ -12,9 +12,9 @@ This document provides steps for using Capistrano to deploy code to various envi
 | legacy | production | lin-res44.csc.ncsu.edu	| 152.14.92.5 | expertiza | `/var/www` |
 
 ## Configuring a new Target Server 🎯
-Follow the following steps to setup a new deployment target server for both manual deployments using the `cap <env> deploy` command as well as automated Travis deployments.
+Follow the following steps to set up a new deployment target server for both manual deployments using the `cap <env> deploy` command as well as automated Travis deployments.
 1. Get access to a user account with sudo access.
-2. Setup passwordless SSH access to this target from the machines you would want to deploy from.
+2. Set up passwordless SSH access to this target from the machines you would want to deploy from.
 3. Make sure the following are installed on the target:
   - `rvm`
   - JDK 8
@@ -37,9 +37,9 @@ export PATH=$PATH:$JAVA_HOME/bin
 export CLASSPATH=.:$JAVA_HOME/jre/lib:$JAVA_HOME/lib:$JAVA_HOME/lib/tools.jar
 ```
 6. Install required ruby versions using `rvm`.
-7. Ensure `secrets.yml` and `database.yml` are present in `<project-root>/shared/config` dir on the target.</br>Ensure the correct password is specified in `database.yml`.</br>If the directory structure is not present on the target, initiate a deployment using `cap <env> deploy`. This deployment will fail, but will create the required dirrectory structure, in which you can place the above two files. Or, manually create the directory structure.
-8. Ensure `public1.pem` and `private2.pem` are present in `<project-root>/shared` dir on the target. Refer point 6. if the directory structure is not present. 
-9. Setup firewall access rules as follows:
+7. Ensure `secrets.yml` and `database.yml` are present in `<project-root>/shared/config` dir on the target.</br>Ensure the correct password is specified in `database.yml`.</br>If the directory structure is not present on the target, initiate a deployment using `cap <env> deploy`. This deployment will fail, but will create the required directory structure, in which you can place the above two files. Or, manually create the directory structure.
+8. Ensure `public1.pem` and `private2.pem` are present in `<project-root>/shared` dir on the target. Run `cap <env> deploy` or manually create the directories if the directory structure is not present. 
+9. Set up firewall access rules as follows:
 ```bash
 sudo iptables -I INPUT -p tcp -s 0.0.0.0/0 --dport 8080 -j ACCEPT
 sudo ufw allow 8080 (run again if it fails)
@@ -50,7 +50,7 @@ sudo ufw reload
 sudo iptables -I INPUT -p tcp -s "$(dig +short nat.travisci.net | tr -s '\r\n' ',' | sed -e 's/,$/\n/')" --dport 22 -j ACCEPT
 ```
 
-**Hint:** To test your new configuration, manually clone the desired Expertiza branch in some random dir on the server, run `bundle install`, `rake db:migrate` and start the Rails server using `rails s`, all inside the cloned repo. If the application loads up correctly, the server is ready for remote deployments provided correct SSH setup.
+**Hint:** To test your new configuration, manually clone the desired Expertiza branch in some random dir on the server, run `bundle install`, `rake db:migrate` and start the Rails server using `rails s`, all inside the cloned repo. If the application loads up correctly, the server is ready for remote deployments provided correct SSH set up.
 
 ## Deployment using Capistrano ⚙️
 ### Capfile
