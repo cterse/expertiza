@@ -26,8 +26,8 @@ Follow the following steps to set up a new deployment target server for both man
   - `bundler` gem
 4. Make sure the deployment user has MySQL remote login enabled with no password on both `localhost` and `127.0.0.1`. Use the following commands in the mysql terminal:
 ```sql
-create user 'root'@'127.0.0.1' identified by '';
-grant all privileges on *.* to 'root'@'127.0.0.1' with grant option;
+create user '<user-name>'@'127.0.0.1' identified by '';
+grant all privileges on *.* to '<user-name>'@'127.0.0.1' with grant option;
 flush privileges;
 ```
 5. Run following commands to set relevant Java environment variables:
