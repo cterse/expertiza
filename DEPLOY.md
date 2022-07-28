@@ -8,7 +8,7 @@ This document provides steps for using Capistrano to deploy code to various envi
 | Expertiza Branch | Capistrano Environment | Target Server | IP Address | Deployment User | Deployment Directory
 |---|---|---|---|---|---|
 | deployment_fix | testing | VCL - Master branch testing server	| 152.7.98.236 | cterse | `/var/www` |
-| main | production | ???	| ??? | ??? | `/var/www` |
+| main | testing | lin-res103.csc.ncsu.edu	| 152.14.92.215 | ??? | `/var/www` |
 | legacy | ??? | ???	| ??? | ??? | `/var/www` |
 
 ## Configuring a new Target Server 🎯
