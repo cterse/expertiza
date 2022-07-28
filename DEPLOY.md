@@ -14,8 +14,18 @@ This document provides steps for using Capistrano to deploy code to various envi
 ## Configuring a new Target Server 🎯
 Follow the following steps to set up a new deployment target server for both manual deployments using the `cap <env> deploy` command as well as automated Travis deployments.
 1. Get access to a user account with sudo access.
-2. Set up passwordless SSH access to this target from the machines you would want to deploy from.
-3. Make sure the following are installed on the target:
+2. Set up passwordless SSH access to this target from the machines you would want to deploy from. Set up passwordless login as follows (run them on the machine running Capistrano):
+```bash
+ssh-keygen -f ~/.ssh/expertizakey -t ed25519
+ssh-copy-id -i ~/.ssh/expertizakey <user-name>@<target-server-domain/IP>
+```
+Create file named `config` in `~/.ssh` dir, if not already present; add the following to it:
+```bash
+Host <target-server-domain/IP>
+User <user-name>
+IdentityFile ~/.ssh/expertizakey
+```
+4. Make sure the following are installed on the target:
   - `rvm`
   - JDK 8
   - git
@@ -24,7 +34,7 @@ Follow the following steps to set up a new deployment target server for both man
   - NodeJS
   - `npm`
   - `bundler` gem
-4. Make sure the deployment user has MySQL remote login enabled with no password on both `localhost` and `127.0.0.1`. Use the following commands in the mysql terminal:
+5. Make sure the deployment user has MySQL remote login enabled with no password on both `localhost` and `127.0.0.1`. Use the following commands in the mysql terminal:
 ```sql
 create user '<user-name>'@'127.0.0.1' identified by '';
 grant all privileges on *.* to '<user-name>'@'127.0.0.1' with grant option;
