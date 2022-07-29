@@ -13,8 +13,8 @@ This document provides steps for using Capistrano to deploy code to various envi
 
 ## Configuring a new Target Server 🎯
 Follow the following steps to set up a new deployment target server for both manual deployments using the `cap <env> deploy` command as well as automated Travis deployments.
-1. Get access to a user account with sudo access.
-2. Set up passwordless SSH access to this target from the machines you would want to deploy from. Set up passwordless login as follows (run them on the machine running Capistrano):
+- Get access to a user account with sudo access.
+- Set up passwordless SSH access to this target from the machines you would want to deploy from. Set up passwordless login as follows (run them on the machine running Capistrano):
 ```bash
 ssh-keygen -f ~/.ssh/expertizakey -t ed25519
 ssh-copy-id -i ~/.ssh/expertizakey <user-name>@<target-server-domain/IP>
@@ -25,7 +25,7 @@ Host <target-server-domain/IP>
 User <user-name>
 IdentityFile ~/.ssh/expertizakey
 ```
-4. Make sure the following are installed on the target:
+- Make sure the following are installed on the target:
   - `rvm`
   - JDK 8
   - git
@@ -34,32 +34,32 @@ IdentityFile ~/.ssh/expertizakey
   - NodeJS
   - `npm`
   - `bundler` gem
-5. Make sure the deployment user has MySQL remote login enabled with no password on both `localhost` and `127.0.0.1`. Use the following commands in the mysql terminal:
+- Make sure the deployment user has MySQL remote login enabled with no password on both `localhost` and `127.0.0.1`. Use the following commands in the mysql terminal:
 ```sql
 create user '<user-name>'@'127.0.0.1' identified by '';
 grant all privileges on *.* to '<user-name>'@'127.0.0.1' with grant option;
 flush privileges;
 ```
-5. Run following commands to set relevant Java environment variables:
+- Run following commands to set relevant Java environment variables:
 ```bash
 export JAVA_HOME=$(dirname $(dirname $(readlink $(readlink $(which javac)))))
 export PATH=$PATH:$JAVA_HOME/bin
 export CLASSPATH=.:$JAVA_HOME/jre/lib:$JAVA_HOME/lib:$JAVA_HOME/lib/tools.jar
 ```
-6. Install required ruby versions using `rvm`.
-7. Ensure `secrets.yml` and `database.yml` are present in `<project-root>/shared/config` dir on the target.</br>Ensure the correct password is specified in `database.yml`.</br>If the directory structure is not present on the target, initiate a deployment using `cap <env> deploy`. This deployment will fail, but will create the required directory structure, in which you can place the above two files. Or, manually create the directory structure.
-8. Ensure `public1.pem` and `private2.pem` are present in `<project-root>/shared` dir on the target. Run `cap <env> deploy` or manually create the directories if the directory structure is not present. 
-9. Set up firewall access rules as follows:
+- Install required ruby versions using `rvm`.
+- Ensure `secrets.yml` and `database.yml` are present in `<project-root>/shared/config` dir on the target.</br>Ensure the correct password is specified in `database.yml`.</br>If the directory structure is not present on the target, initiate a deployment using `cap <env> deploy`. This deployment will fail, but will create the required directory structure, in which you can place the above two files. Or, manually create the directory structure.
+- Ensure `public1.pem` and `private2.pem` are present in `<project-root>/shared` dir on the target. Run `cap <env> deploy` or manually create the directories if the directory structure is not present. 
+- Set up firewall access rules as follows:
 ```bash
 sudo iptables -I INPUT -p tcp -s 0.0.0.0/0 --dport 8080 -j ACCEPT
 sudo ufw allow 8080 (run again if it fails)
 sudo ufw reload
 ```
-10. For automated deployments from Travis servers, run command to allow Travis servers in firewall:
+- For automated deployments from Travis servers, run command to allow Travis servers in firewall:
 ```bash
 sudo iptables -I INPUT -p tcp -s "$(dig +short nat.travisci.net | tr -s '\r\n' ',' | sed -e 's/,$/\n/')" --dport 22 -j ACCEPT
 ```
-11. Set the `SECRET_KEY_BASE` environment variable. Get this value from the lin-res44 server.
+- Set the `SECRET_KEY_BASE` environment variable. Get this value from the lin-res44 server.
 
 **Hint:** To test your new configuration, manually clone the desired Expertiza branch in some random dir on the server, run `bundle install`, `rake db:migrate` and start the Rails server using `rails s`, all inside the cloned repo. If the application loads up correctly, the server is ready for remote deployments provided correct SSH set up.
 
