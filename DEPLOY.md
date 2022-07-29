@@ -59,6 +59,7 @@ sudo ufw reload
 ```bash
 sudo iptables -I INPUT -p tcp -s "$(dig +short nat.travisci.net | tr -s '\r\n' ',' | sed -e 's/,$/\n/')" --dport 22 -j ACCEPT
 ```
+11. Set the `SECRET_KEY_BASE` environment variable. Get this value from the lin-res44 server.
 
 **Hint:** To test your new configuration, manually clone the desired Expertiza branch in some random dir on the server, run `bundle install`, `rake db:migrate` and start the Rails server using `rails s`, all inside the cloned repo. If the application loads up correctly, the server is ready for remote deployments provided correct SSH set up.
 
