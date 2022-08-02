@@ -91,7 +91,9 @@ openssl aes-256-cbc -k "password for encryption" -in ~/.ssh/id_rsa -out deploy_i
 ```
 
 In the `.travis.yml` file, 
-1. The `branches` property specifies a list of git branches that would be processed by Travis. Add branch you want to deploy under `branches`.
+1. Make sure the branch you want to deploy is listed in the `branches.only` property.
+<img width="176" alt="image" src="https://user-images.githubusercontent.com/13689112/182425549-c8bbbffa-daf1-4894-834a-b577c85c6835.png">
+
 2. Add following section:
 ```yml
 after_success:
@@ -99,7 +101,7 @@ after_success:
 - chmod 400 config/deploy_id_rsa_enc_travis
 - chmod 400 config/deploy_id_rsa
 - ssh-add -k config/deploy_id_rsa
-- bundle exec cap staging deploy --trace
+- bundle exec cap <env> deploy --trace
 ```
 
 In the `Gemfile`, add the following lines at the end:
