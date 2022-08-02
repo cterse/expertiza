@@ -19,7 +19,7 @@ Follow the following steps to set up a new deployment target server for manual d
 ssh-keygen -f ~/.ssh/expertizakey -t ed25519
 ssh-copy-id -i ~/.ssh/expertizakey <user-name>@<target-server-domain/IP>
 ```
-Create file named `config` in `~/.ssh` dir, if not already present; add the following to it:
+Create a file named `config` in `~/.ssh` dir, if not already present. Add the following to it:
 ```bash
 Host <target-server-domain/IP>
 User <user-name>
