@@ -16,7 +16,7 @@ Follow the following steps to set up a new deployment target server for manual d
 - Get access to a user account with sudo access.
 - Set up passwordless SSH access to this target from the machines you would want to deploy from. Set up passwordless login as follows (run them on the machine running Capistrano):
 ```bash
-ssh-keygen -f ~/.ssh/expertizakey -t ed25519
+ssh-keygen -f ~/.ssh/expertizakey -t ed25519    # https://ed25519.cr.yp.to/
 ssh-copy-id -i ~/.ssh/expertizakey <user-name>@<target-server-domain/IP>
 ```
 Create a file named `config` in `~/.ssh` dir, if not already present. Add the following to it:
