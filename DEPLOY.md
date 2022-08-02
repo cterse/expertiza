@@ -108,8 +108,6 @@ gem 'ed25519', '1.2.4'
 gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'
 ```
 
-Check for further reference: https://gist.github.com/waynegraham/5c6ab006862123398d07.
-
 ## Tips 💡
 1. Add `Rake::Task["deploy:migrate"].clear_actions` to `deploy.rb` to disable the migrate rake tasks during deployment. 
 2. Run `bundle lock --update` to update the `Gemfile.lock` after any changes to the `Gemfile`. Make sure to track both files in git.
