@@ -91,7 +91,7 @@ openssl aes-256-cbc -k "password for encryption" -in ~/.ssh/id_rsa -out deploy_i
 ```
 
 In the `.travis.yml` file, 
-1. Add branch you want to deploy under `branches`.
+1. the `branch` property specifies a list of git branches that would be processed by Travis. Add branch you want to deploy under `branches`.
 2. Add following section:
 ```yml
 after_success:
@@ -108,8 +108,7 @@ gem 'ed25519', '1.2.4'
 gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'
 ```
 
-### `/config/deploy/<env>.rb`
-We have used staging.rb env as a testing env for Travis deployments. Make the following changes in the approproate Capistrano env file.
+While testing automated deployments, we used staging.rb env as a testing env for Travis deployments. Make the following changes in the approproate Capistrano env files in `/config/deploy/<env>.rb`.
 1. Edit and set line to `server '<YOUR_DEPLOYMENT_SERVER>', user: '<SERVER_USER>', roles: %w[web app db], my_property: :my_value`
 2. Edit user name in following lines:
 ```ruby
@@ -118,7 +117,7 @@ role :web, %w[<SERVER_USER>@<YOUR_DEPLOYMENT_SERVER>]
 role :db,  %w[<SERVER_USER>@<YOUR_DEPLOYMENT_SERVER>]
 ```
 
-### `/bower.json`
+In the `/bower.json` file, 
 1. Add dependency `"tinymce": "latest"` in the bower.json file. (only if there are errors)
 
 Check for further reference: https://gist.github.com/waynegraham/5c6ab006862123398d07.
