@@ -34,7 +34,7 @@ IdentityFile ~/.ssh/expertizakey
   - NodeJS
   - `npm`
   - `bundler` gem
-- Make sure the deployment user has MySQL remote login enabled with no password on both `localhost` and `127.0.0.1`. Use the following commands in the mysql terminal:
+- Make sure the deployment user has MySQL remote login enabled with no password on both `localhost` and `127.0.0.1`. To do this, use the following commands in the mysql terminal:
 ```sql
 create user '<user-name>'@'127.0.0.1' identified by '';
 grant all privileges on *.* to '<user-name>'@'127.0.0.1' with grant option;
