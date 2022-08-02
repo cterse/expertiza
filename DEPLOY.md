@@ -60,7 +60,7 @@ sudo ufw reload
 ```bash
 sudo iptables -I INPUT -p tcp -s "$(dig +short nat.travisci.net | tr -s '\r\n' ',' | sed -e 's/,$/\n/')" --dport 22 -j ACCEPT
 ```
-- Set the `SECRET_KEY_BASE` environment variable. Get this value from the lin-res44 server.
+- Set the `SECRET_KEY_BASE` environment variable. Get this value from a server already configured to serve Expertiza, for example, the lin-res44 server.
 - Install Apache 2 as a web server and Phusion Passenger as an application server, following [this](https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-passenger-and-apache-on-ubuntu-14-04) tutorial.
 
 **Hint:** To test your new configuration, manually clone the desired Expertiza branch in some random dir on the server, run `bundle install`, `rake db:migrate` and start the Rails server using `rails s`, all inside the cloned repo. If the application loads up correctly, the server is ready for remote deployments provided correct SSH set up.
