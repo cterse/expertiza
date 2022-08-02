@@ -91,7 +91,7 @@ openssl aes-256-cbc -k "password for encryption" -in ~/.ssh/id_rsa -out deploy_i
 ```
 
 In the `.travis.yml` file, 
-1. the `branch` property specifies a list of git branches that would be processed by Travis. Add branch you want to deploy under `branches`.
+1. The `branches` property specifies a list of git branches that would be processed by Travis. Add branch you want to deploy under `branches`.
 2. Add following section:
 ```yml
 after_success:
