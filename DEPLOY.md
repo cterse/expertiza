@@ -56,7 +56,7 @@ sudo iptables -I INPUT -p tcp -s 0.0.0.0/0 --dport 8080 -j ACCEPT
 sudo ufw allow 8080 (run again if it fails)
 sudo ufw reload
 ```
-- For automated deployments from Travis servers, run command to allow Travis servers in firewall:
+- For automated deployments from Travis servers, run command to allow Travis servers through the firewall:
 ```bash
 sudo iptables -I INPUT -p tcp -s "$(dig +short nat.travisci.net | tr -s '\r\n' ',' | sed -e 's/,$/\n/')" --dport 22 -j ACCEPT
 ```
