@@ -90,7 +90,7 @@ travis encrypt DEPLOY_KEY="password for encryption" --add
 openssl aes-256-cbc -k "password for encryption" -in ~/.ssh/id_rsa -out deploy_id_rsa_enc_travis -a
 ```
 
-### `/.travis.yml`
+In the `.travis.yml` file, 
 1. Add branch you want to deploy under `branches`.
 2. Add following section:
 ```yml
@@ -102,8 +102,7 @@ after_success:
 - bundle exec cap staging deploy --trace
 ```
 
-### Gemfile
-Add the following lines at the end:
+In the `Gemfile`, add the following lines at the end:
 ```ruby
 gem 'ed25519', '1.2.4'
 gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'
