@@ -12,7 +12,7 @@ This document provides steps for using Capistrano to deploy code to various envi
 | legacy | production | lin-res44.csc.ncsu.edu	| 152.14.92.5 | expertiza | `/var/www` |
 
 ## Configuring a new Target Server 🎯
-Follow the following steps to set up a new deployment target server for both manual deployments using the `cap <env> deploy` command as well as automated Travis deployments.
+Follow the following steps to set up a new deployment target server for manual deployments using the `cap <env> deploy` command, as well as automated Travis deployments.
 - Get access to a user account with sudo access.
 - Set up passwordless SSH access to this target from the machines you would want to deploy from. Set up passwordless login as follows (run them on the machine running Capistrano):
 ```bash
