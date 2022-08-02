@@ -91,7 +91,7 @@ openssl aes-256-cbc -k "password for encryption" -in ~/.ssh/id_rsa -out deploy_i
 ```
 
 In the `.travis.yml` file, 
-1. Make sure the branch you want to deploy is listed in the `branches.only` property.
+1. Make sure the branch you want to deploy is listed in the `branches.only` property. See: [Travis: Building Specific Branches](https://docs.travis-ci.com/user/customizing-the-build/#building-specific-branches)
 <img width="176" alt="image" src="https://user-images.githubusercontent.com/13689112/182425549-c8bbbffa-daf1-4894-834a-b577c85c6835.png">
 
 2. Add following section:
