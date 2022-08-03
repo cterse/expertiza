@@ -89,6 +89,9 @@ travis login --pro --github-token <token>
 travis encrypt DEPLOY_KEY="password for encryption" --add
 openssl aes-256-cbc -k "password for encryption" -in ~/.ssh/id_rsa -out deploy_id_rsa_enc_travis -a
 ```
+- `<token>` is a GitHub Personal Access Token. Follow [these steps](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-token) to create a PAT. 
+- `password for encryption` may be any random string
+- Then `openssl` command encrypts the private key file specified using the `-in` flag using the ecryption algorithm `aes-256-cbc` with a password given with the `-k` flag and produces a file name specified using `-out`. Then `-a` flag [Base-64](https://en.wikipedia.org/wiki/Base64) encodes the output file.
 
 In the `.travis.yml` file, 
 1. Make sure the branch you want to deploy is listed in the `branches.only` property. See: [Travis: Building Specific Branches](https://docs.travis-ci.com/user/customizing-the-build/#building-specific-branches)
@@ -115,5 +118,5 @@ gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'
 2. Run `bundle lock --update` to update the `Gemfile.lock` after any changes to the `Gemfile`. Make sure to track both files in git.
 3. VCL VMs may keep on crashing. Try a soft then a hard reboot if there are connection issues.
 4. The expertiza.ncsu.edu (Production) server runs RHEL and the Master Testing VCL Server runs Ubuntu 16.04 -> good to know.
-5. If you're testing a deployment with all success messages, no visible errors, but that does not load the final application, try accessing the application on the target server itself first. Use `curl` with the localhost as domain and appropriate port. If it works here, there are firewall issues. 
+5. If there are issues accessing the application from a different machine, test whether the `curl https://localhost:<port>` command works on the target server. If this works, there may be some issues with the firewall configuration.
 6. Travis CI charges as per the time required for builds. For testing, disable build time-consuming or already-tested components under the `matrix` section in `.travis.yml` 
