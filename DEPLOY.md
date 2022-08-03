@@ -104,7 +104,7 @@ after_success:
 - bundle exec cap <env> deploy --trace
 ```
 
-In the `Gemfile`, add the following lines at the end:
+In the `Gemfile`, make sure the following lines are present:
 ```ruby
 gem 'ed25519', '1.2.4'
 gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'
